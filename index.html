@@ -268,7 +268,7 @@ body.light .tab.active{
 .CodeMirror{
     width:100%;
     height:100%;
-    font-size:15px;
+    font-size:var(--editor-fs,15px);
     line-height:1.45;
     font-family:monospace;
 }
@@ -472,7 +472,7 @@ body.light .tool-btn{
     }
 
     .CodeMirror{
-        font-size:14px;
+        font-size:var(--editor-fs,14px);
     }
 }
 
@@ -615,34 +615,6 @@ body.light #designPage{
     padding:26px 26px 20px;
 }
 
-#designPage textarea#prompt{
-    width:100%;
-    min-height:96px;
-    resize:none;
-    border:none;
-    outline:none;
-    background:transparent;
-    font-family:inherit;
-    font-size:18px;
-    line-height:1.5;
-    color:var(--dg-ink);
-    padding:6px 4px 18px;
-}
-
-#designPage textarea#prompt::placeholder{
-    color:var(--dg-placeholder);
-}
-
-#designPage textarea#prompt.shake{
-    animation:dgShake .32s ease;
-}
-
-@keyframes dgShake{
-    0%,100%{transform:translateX(0);}
-    25%{transform:translateX(-6px);}
-    75%{transform:translateX(6px);}
-}
-
 #designPage .type-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -726,6 +698,54 @@ body.light #designPage{
     border-color:var(--dg-blue);
     background:linear-gradient(100deg,rgba(61,107,255,.08),rgba(139,92,246,.08));
     color:var(--dg-blue);
+}
+
+#designPage .file-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:14px 4px 0;
+}
+
+#designPage .file-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    max-width:100%;
+    padding:7px 8px 7px 12px;
+    border:1px solid var(--dg-line);
+    border-radius:999px;
+    background:var(--dg-blue-tint);
+    color:var(--dg-blue);
+    font-size:12.5px;
+    font-weight:600;
+}
+
+#designPage .file-chip span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-width:160px;
+}
+
+#designPage .file-chip button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:18px;
+    height:18px;
+    border:none;
+    border-radius:50%;
+    background:rgba(61,107,255,.18);
+    color:inherit;
+    font-size:12px;
+    line-height:1;
+    cursor:pointer;
+    flex:0 0 auto;
+}
+
+#designPage .file-chip button:hover{
+    background:rgba(61,107,255,.3);
 }
 
 #designPage .toolbar{
@@ -846,41 +866,6 @@ body.light #designPage{
 #designPage .model-menu button.active{
     color:var(--dg-blue);
     font-weight:600;
-}
-
-#designPage .attach-menu{
-    position:absolute;
-    bottom:calc(100% + 10px);
-    left:0;
-    background:var(--dg-surface);
-    border:1px solid var(--dg-line);
-    border-radius:12px;
-    box-shadow:var(--dg-shadow-lg);
-    padding:6px;
-    min-width:190px;
-    display:none;
-    z-index:20;
-}
-
-#designPage .attach-menu.show{
-    display:block;
-}
-
-#designPage .attach-menu button{
-    width:100%;
-    text-align:left;
-    border:none;
-    background:none;
-    font-family:inherit;
-    font-size:14px;
-    color:var(--dg-ink);
-    padding:9px 10px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-#designPage .attach-menu button:hover{
-    background:var(--dg-canvas);
 }
 
 #designPage .send-btn{
@@ -1027,11 +1012,6 @@ body.light #designPage{
     #designPage .composer-box{
         padding:20px 16px 16px;
         border-radius:24px;
-    }
-
-    #designPage textarea#prompt{
-        font-size:16px;
-        min-height:80px;
     }
 
     #designPage .type-grid{
@@ -1334,6 +1314,116 @@ body.light .contact-status.error{
         font-size:16px;
     }
 }
+
+/* SETTINGS PANEL */
+
+.editor-container{
+    touch-action:pan-x pan-y;
+}
+
+.settings-panel{
+    position:absolute;
+    top:50px;
+    right:0;
+    width:275px;
+    max-width:calc(100vw - 16px);
+    background:#202720;
+    border:1px solid #39423d;
+    border-radius:12px;
+    padding:14px;
+    display:none;
+    z-index:10000;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+
+.settings-panel.show{
+    display:block;
+}
+
+body.light .settings-panel{
+    background:#fff;
+    border-color:#c8ced2;
+}
+
+.set-title{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.set-row{
+    margin-bottom:13px;
+}
+
+.set-label{
+    font-size:12px;
+    color:#8b9891;
+    margin-bottom:6px;
+}
+
+.set-ctrl{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.set-btn{
+    min-width:40px;
+    height:36px;
+    padding:0 10px;
+    border:1px solid #39423d;
+    border-radius:8px;
+    background:#303832;
+    color:#fff;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+body.light .set-btn{
+    background:#f4f6f8;
+    color:#111;
+    border-color:#c8ced2;
+}
+
+.set-btn.text{
+    font-size:13px;
+    min-width:64px;
+}
+
+.set-btn.on{
+    color:#00e89a;
+    border-color:#00e89a;
+}
+
+.set-value{
+    flex:1;
+    text-align:center;
+    font-size:14px;
+    font-weight:700;
+}
+
+.set-reset{
+    width:100%;
+    font-size:13px;
+}
+
+.set-hint{
+    margin-top:10px;
+    font-size:11px;
+    line-height:1.45;
+    color:#8b9891;
+}
+
+.run-btn{white-space:nowrap;}
+.actions{flex:0 0 auto;}
+.logo-area{flex:1 1 auto;}
+.title-area{overflow:hidden;}
+.app-title{overflow:hidden;text-overflow:ellipsis;}
+@media(max-width:500px){
+    .subtitle{display:none;}
+    .logo{flex:0 0 auto;}
+}
 </style>
 </head>
 
@@ -1399,6 +1489,52 @@ body.light .contact-status.error{
                 onclick="showHelp()">
             ?
         </button>
+
+        <button id="settingsBtn"
+                class="icon-btn"
+                onclick="toggleSettings()"
+                aria-label="Settings">
+            &#9881;
+        </button>
+
+        <div id="settingsPanel" class="settings-panel">
+
+            <div class="set-title">Settings</div>
+
+            <div class="set-row">
+                <div class="set-label">Screen size (poora app zoom in / out)</div>
+                <div class="set-ctrl">
+                    <button class="set-btn" onclick="changeUiZoom(-10)">&minus;</button>
+                    <div class="set-value" id="uiZoomValue">100%</div>
+                    <button class="set-btn" onclick="changeUiZoom(10)">+</button>
+                </div>
+            </div>
+
+            <div class="set-row">
+                <div class="set-label">Code text size (editor zoom)</div>
+                <div class="set-ctrl">
+                    <button class="set-btn" onclick="changeEditorZoom(-1)">&minus;</button>
+                    <div class="set-value" id="editorFontValue">15px</div>
+                    <button class="set-btn" onclick="changeEditorZoom(1)">+</button>
+                </div>
+            </div>
+
+            <div class="set-row">
+                <div class="set-label">Extra buttons toolbar (&lt; &gt; { } TAB, arrows)</div>
+                <div class="set-ctrl">
+                    <button class="set-btn text" id="toolbarToggleBtn" onclick="toggleToolbarSetting()">On</button>
+                </div>
+            </div>
+
+            <button class="set-btn set-reset" onclick="resetSettings()">Reset to default</button>
+
+            <div class="set-hint">
+                Editor par Ctrl + scroll (ya Ctrl + / Ctrl -) aur phone par
+                do ungli se pinch karne se sirf code zoom hota hai, poora
+                browser nahi.
+            </div>
+
+        </div>
 
         <button id="themeBtn"
                 class="icon-btn"
@@ -1553,8 +1689,6 @@ body.light .contact-status.error{
 
             <div class="composer-box">
 
-                <textarea id="prompt" placeholder="Describe what you want to design..."></textarea>
-
                 <div class="type-grid" id="typeGrid">
 
                     <div class="type-card" data-type="Website" onclick="selectType(this)">
@@ -1598,18 +1732,21 @@ body.light .contact-status.error{
                     <div class="chip" onclick="selectChip(this)">Wireframe first</div>
                 </div>
 
+                <div class="file-chips" id="fileChips"></div>
+
                 <div class="toolbar">
 
                     <div class="toolbar-left">
 
-                        <div class="icon-round" onclick="toggleAttachMenu(event)" aria-label="Add attachment">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        </div>
+                        <input type="file"
+                               id="dgFileInput"
+                               accept="image/*,.pdf,.txt,.md,.doc,.docx"
+                               multiple
+                               hidden
+                               onchange="handleDgFileSelect(event)">
 
-                        <div class="attach-menu" id="attachMenu">
-                            <button type="button" onclick="closeDgMenus()">Upload a reference image</button>
-                            <button type="button" onclick="closeDgMenus()">Attach a file</button>
-                            <button type="button" onclick="closeDgMenus()">Paste a link</button>
+                        <div class="icon-round" onclick="document.getElementById('dgFileInput').click()" aria-label="Upload a file">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         </div>
 
                         <span class="status-dot"></span>
@@ -1833,6 +1970,21 @@ const memoryStore = {
     theme:null
 };
 
+let isLoadingCode=false;
+
+function storeGet(key){
+    try{
+        const v=localStorage.getItem("webstudio_"+key);
+        if(v!==null){ return v; }
+    }catch(e){}
+    return memoryStore[key];
+}
+
+function storeSet(key,value){
+    memoryStore[key]=value;
+    try{ localStorage.setItem("webstudio_"+key,value); }catch(e){}
+}
+
 
 /* ================================
    EDITORS
@@ -2046,6 +2198,26 @@ function runCode(){
     );
 
 
+    /* local files (styles.css, script.js) can't load inside the
+       preview - their code comes from the CSS / JS tabs instead */
+    doc.querySelectorAll("link[href],script[src]").forEach(function(el){
+
+        const ref=(el.getAttribute("href") || el.getAttribute("src") || "").trim();
+
+        if(!/^(https?:)?\/\//i.test(ref) && !/^data:/i.test(ref)){
+            el.remove();
+        }
+    });
+
+    const headExtra=doc.head
+        ? Array.from(doc.head.children)
+            .filter(function(el){
+                return /^(STYLE|LINK|SCRIPT)$/.test(el.tagName);
+            })
+            .map(function(el){ return el.outerHTML; })
+            .join("\n")
+        : "";
+
     const bodyContent=doc.body
         ? doc.body.innerHTML
         : htmlCode;
@@ -2059,6 +2231,8 @@ function runCode(){
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1.0">
+
+${headExtra}
 
 <style>
 ${cssCode}
@@ -2190,13 +2364,13 @@ function editorAction(action){
 
 function saveCode(){
 
-    if(!editors.html){
+    if(!editors.html || isLoadingCode){
         return;
     }
 
-    memoryStore.html = editors.html.getValue();
-    memoryStore.css  = editors.css.getValue();
-    memoryStore.js   = editors.js.getValue();
+    storeSet("html",editors.html.getValue());
+    storeSet("css",editors.css.getValue());
+    storeSet("js",editors.js.getValue());
 }
 
 
@@ -2206,17 +2380,29 @@ function saveCode(){
 
 function loadSavedCode(){
 
-    if(memoryStore.html!==null){
-        editors.html.setValue(memoryStore.html);
+    /* read everything first, otherwise the first setValue()
+       would overwrite the saved css/js with defaults */
+    const saved={
+        html:storeGet("html"),
+        css:storeGet("css"),
+        js:storeGet("js")
+    };
+
+    isLoadingCode=true;
+
+    if(saved.html!==null && saved.html!==undefined){
+        editors.html.setValue(saved.html);
     }
 
-    if(memoryStore.css!==null){
-        editors.css.setValue(memoryStore.css);
+    if(saved.css!==null && saved.css!==undefined){
+        editors.css.setValue(saved.css);
     }
 
-    if(memoryStore.js!==null){
-        editors.js.setValue(memoryStore.js);
+    if(saved.js!==null && saved.js!==undefined){
+        editors.js.setValue(saved.js);
     }
+
+    isLoadingCode=false;
 }
 
 
@@ -2263,7 +2449,7 @@ function toggleTheme(){
 
     const light=document.body.classList.contains("light");
 
-    memoryStore.theme = light ? "light" : "dark";
+    storeSet("theme",light ? "light" : "dark");
 
     updateEditorTheme();
 }
@@ -2276,16 +2462,24 @@ function toggleTheme(){
 const toolbar=
     document.getElementById("keyboardToolbar");
 
+toolbar.addEventListener("mousedown",function(e){
+    e.preventDefault();
+});
+
 
 function showKeyboardToolbar(){
 
-    if(currentTab==="output"){
+    if(currentTab==="output" || !toolbarEnabled){
         return;
     }
 
     toolbar.classList.add("show");
 
     positionToolbar();
+
+    /* keyboard animates in - re-check after it settles */
+    setTimeout(positionToolbar,120);
+    setTimeout(positionToolbar,350);
 }
 
 
@@ -2293,38 +2487,62 @@ function hideKeyboardToolbar(){
 
     toolbar.classList.remove("show");
 
-    toolbar.style.bottom="0px";
+    const box=document.querySelector(".editor-container");
+
+    if(box){
+        box.style.bottom="0px";
+    }
+
+    lastToolbarInset=-1;
 }
 
 
+let lastToolbarInset=-1;
+
+/* Toolbar always sits exactly on top of the keyboard, even
+   while scrolling: it is placed from the TOP of the layout
+   viewport using the visual viewport (keyboard-aware) size. */
+
 function positionToolbar(){
 
-    if(!window.visualViewport){
+    if(currentTab==="output" || !toolbar.classList.contains("show")){
         return;
     }
 
-    if(currentTab==="output"){
-        return;
-    }
+    const vv=window.visualViewport;
 
-    const viewport=window.visualViewport;
+    const viewH=vv ? vv.height : window.innerHeight;
+    const offTop=vv ? vv.offsetTop : 0;
+    const z=uiZoom/100;
 
-    const keyboardHeight=
-        window.innerHeight-viewport.height;
+    /* everything inside <html> is scaled by z, so convert
+       real screen pixels into app pixels (divide by z) */
+    const toolbarH=toolbar.offsetHeight || 54;
 
+    toolbar.style.bottom="auto";
+    toolbar.style.top="0px";
 
-    if(keyboardHeight>100){
+    toolbar.style.transform=
+        "translateY("+Math.max(0,(offTop+viewH)/z-toolbarH)+"px)";
 
-        toolbar.style.bottom=
-            keyboardHeight+"px";
+    /* keep the editor text above toolbar + keyboard */
 
-        toolbar.classList.add("show");
+    const covered=vv
+        ? Math.max(0,window.innerHeight-vv.height-vv.offsetTop)
+        : 0;
 
-    }
-    else{
+    const inset=Math.round(toolbarH+covered/z);
 
-        toolbar.style.bottom="0px";
+    if(inset!==lastToolbarInset){
 
+        lastToolbarInset=inset;
+
+        document.querySelector(".editor-container")
+            .style.bottom=inset+"px";
+
+        if(currentEditor){
+            currentEditor.refresh();
+        }
     }
 }
 
@@ -2341,6 +2559,303 @@ if(window.visualViewport){
         positionToolbar
     );
 }
+
+window.addEventListener("resize",positionToolbar);
+window.addEventListener("scroll",positionToolbar,true);
+
+
+/* ================================
+   SETTINGS / ZOOM
+================================ */
+
+let uiZoom=100;
+let editorFont=15;
+let toolbarEnabled=true;
+
+const isTouchDevice=
+    !(window.matchMedia &&
+      window.matchMedia("(hover:hover) and (pointer:fine)").matches);
+
+
+function clamp(v,min,max){
+    return Math.min(max,Math.max(min,v));
+}
+
+
+function applyUiZoom(){
+
+    document.documentElement.style.zoom=uiZoom/100;
+
+    document.getElementById("uiZoomValue").textContent=uiZoom+"%";
+
+    lastToolbarInset=-1;
+    positionToolbar();
+
+    Object.values(editors).forEach(function(ed){
+        ed.refresh();
+    });
+}
+
+
+function changeUiZoom(step){
+
+    uiZoom=clamp(uiZoom+step,50,200);
+
+    storeSet("uiZoom",String(uiZoom));
+
+    applyUiZoom();
+}
+
+
+function applyEditorFont(){
+
+    document.documentElement.style.setProperty(
+        "--editor-fs",
+        editorFont+"px"
+    );
+
+    document.getElementById("editorFontValue").textContent=editorFont+"px";
+
+    Object.values(editors).forEach(function(ed){
+        ed.refresh();
+    });
+}
+
+
+function setEditorFont(size){
+
+    editorFont=clamp(Math.round(size),8,48);
+
+    storeSet("editorFont",String(editorFont));
+
+    applyEditorFont();
+}
+
+
+function changeEditorZoom(step){
+
+    setEditorFont(editorFont+step);
+}
+
+
+function applyToolbarSetting(){
+
+    const btn=document.getElementById("toolbarToggleBtn");
+
+    btn.textContent=toolbarEnabled ? "On" : "Off";
+    btn.classList.toggle("on",toolbarEnabled);
+
+    if(!toolbarEnabled){
+        hideKeyboardToolbar();
+    }
+    else if(currentEditor && currentTab!=="output"){
+        showKeyboardToolbar();
+    }
+}
+
+
+function toggleToolbarSetting(){
+
+    toolbarEnabled=!toolbarEnabled;
+
+    storeSet("toolbarEnabled2",toolbarEnabled ? "1" : "0");
+
+    applyToolbarSetting();
+}
+
+
+function resetSettings(){
+
+    uiZoom=100;
+    editorFont=window.innerWidth<=500 ? 14 : 15;
+    toolbarEnabled=true;
+
+    storeSet("uiZoom","100");
+    storeSet("editorFont",String(editorFont));
+    storeSet("toolbarEnabled2",toolbarEnabled ? "1" : "0");
+
+    applyUiZoom();
+    applyEditorFont();
+    applyToolbarSetting();
+}
+
+
+function toggleSettings(){
+
+    document.getElementById("settingsPanel").classList.toggle("show");
+}
+
+
+function closeSettings(){
+
+    document.getElementById("settingsPanel").classList.remove("show");
+}
+
+
+function initSettings(){
+
+    const z=parseInt(storeGet("uiZoom"),10);
+    const f=parseInt(storeGet("editorFont"),10);
+    const t=storeGet("toolbarEnabled2");
+
+    uiZoom=isNaN(z) ? 100 : clamp(z,50,200);
+
+    editorFont=isNaN(f)
+        ? (window.innerWidth<=500 ? 14 : 15)
+        : clamp(f,8,48);
+
+    /* buttons toolbar is ON by default everywhere */
+    toolbarEnabled=(t===null || t===undefined)
+        ? true
+        : t==="1";
+
+    applyUiZoom();
+    applyEditorFont();
+    applyToolbarSetting();
+}
+
+
+document.addEventListener("click",function(e){
+
+    const panel=document.getElementById("settingsPanel");
+    const btn=document.getElementById("settingsBtn");
+
+    if(!panel.contains(e.target) && !btn.contains(e.target)){
+        closeSettings();
+    }
+});
+
+
+/* Zoom only the app (not the whole browser page) */
+
+let wheelAcc=0;
+
+function zoomStep(dir){
+
+    const overlay=document.querySelector(
+        "#designPage.show, #contactPage.show"
+    );
+
+    if(overlay){
+        changeUiZoom(dir*10);
+    }
+    else{
+        changeEditorZoom(dir);
+    }
+}
+
+document.addEventListener("wheel",function(e){
+
+    if(!e.ctrlKey){
+        return;
+    }
+
+    e.preventDefault();
+
+    wheelAcc+=-e.deltaY;
+
+    if(Math.abs(wheelAcc)>=30){
+
+        zoomStep(wheelAcc>0 ? 1 : -1);
+
+        wheelAcc=0;
+    }
+
+},{passive:false});
+
+document.addEventListener("keydown",function(e){
+
+    if(!(e.ctrlKey || e.metaKey)){
+        return;
+    }
+
+    if(e.key==="+" || e.key==="=" ){
+        e.preventDefault();
+        zoomStep(1);
+    }
+    else if(e.key==="-" || e.key==="_"){
+        e.preventDefault();
+        zoomStep(-1);
+    }
+    else if(e.key==="0"){
+        e.preventDefault();
+        resetSettings();
+    }
+});
+
+/* two-finger pinch on the editor */
+
+(function(){
+
+    const box=document.querySelector(".editor-container");
+
+    let start=null;
+
+    function dist(t){
+        return Math.hypot(
+            t[0].clientX-t[1].clientX,
+            t[0].clientY-t[1].clientY
+        );
+    }
+
+    box.addEventListener("touchstart",function(e){
+
+        if(e.touches.length===2){
+            start={d:dist(e.touches),f:editorFont};
+        }
+
+    },{passive:true});
+
+    box.addEventListener("touchmove",function(e){
+
+        if(e.touches.length===2 && start){
+
+            e.preventDefault();
+
+            setEditorFont(start.f*dist(e.touches)/start.d);
+        }
+
+    },{passive:false});
+
+    box.addEventListener("touchend",function(e){
+
+        if(e.touches.length<2){
+            start=null;
+        }
+    });
+
+})();
+
+
+/* ================================
+   VIBRATION (haptic feedback)
+================================ */
+
+function haptic(ms){
+
+    try{
+        if(navigator.vibrate){
+            navigator.vibrate(ms || 12);
+        }
+    }
+    catch(e){}
+}
+
+document.addEventListener("click",function(e){
+
+    if(!e.target.closest){
+        return;
+    }
+
+    if(e.target.closest(".run-btn")){
+        haptic(30);
+    }
+    else if(e.target.closest(
+        "button, .tab, .nav-item, .type-card, .chip, .example-pill, .icon-round, .model-select"
+    )){
+        haptic(12);
+    }
+});
 
 
 /* ================================
@@ -2463,6 +2978,25 @@ function closeDesignPage(){
 /* If your backend runs on a different origin than this page,
    change this to the full URL, e.g. "https://your-api.example.com/api/contact" */
 const CONTACT_API_URL="/api/contact";
+
+/* Optional: put your email here. If /api/contact is not available
+   (e.g. static hosting), the form opens the visitor's email app
+   with the message ready to send to this address. */
+const CONTACT_EMAIL="";
+
+function contactMailtoFallback(name,email,message){
+
+    if(!CONTACT_EMAIL){
+        return false;
+    }
+
+    const subject=encodeURIComponent("Message from "+name+" (Web Code Studio)");
+    const body=encodeURIComponent("Name: "+name+"\nEmail: "+email+"\n\n"+message);
+
+    window.location.href="mailto:"+CONTACT_EMAIL+"?subject="+subject+"&body="+body;
+
+    return true;
+}
 
 let turnstileToken=null;
 
@@ -2684,6 +3218,13 @@ async function handleContactSubmit(e){
             }
 
         }
+        else if(!data && contactMailtoFallback(name,email,message)){
+
+            showContactStatus(
+                "success",
+                "Opening your email app so you can send the message."
+            );
+        }
         else{
 
             showContactStatus(
@@ -2695,11 +3236,20 @@ async function handleContactSubmit(e){
     }
     catch(err){
 
-        showContactStatus(
-            "error",
-            "Sorry, something went wrong. Please try again later."
-        );
+        if(contactMailtoFallback(name,email,message)){
 
+            showContactStatus(
+                "success",
+                "Opening your email app so you can send the message."
+            );
+        }
+        else{
+
+            showContactStatus(
+                "error",
+                "Sorry, something went wrong. Please try again later."
+            );
+        }
     }
     finally{
 
@@ -2713,28 +3263,14 @@ async function handleContactSubmit(e){
 
 let dgSelectedType="Mobile app";
 let dgSelectedStyle=null;
+let dgAttachedFiles=[];
 
-const dgExamplePrompts={
-    coffee:{
-        text:"A cozy neighborhood coffee shop website with a menu, story, and online ordering.",
-        type:"Website"
-    },
-    fitness:{
-        text:"A fitness app with workout tracking, progress charts, and a weekly plan.",
-        type:"Mobile app"
-    },
-    sales:{
-        text:"A sales dashboard showing revenue trends, top deals, and team performance.",
-        type:"Dashboard"
-    },
-    pitch:{
-        text:"An investor pitch deck for an early-stage startup, ten slides, clean and confident.",
-        type:"Slides"
-    },
-    event:{
-        text:"A bold poster for a weekend music festival with lineup and ticket details.",
-        type:"Poster"
-    }
+const dgExampleTypes={
+    coffee:"Website",
+    fitness:"Mobile app",
+    sales:"Dashboard",
+    pitch:"Slides",
+    event:"Poster"
 };
 
 
@@ -2787,37 +3323,77 @@ function selectChip(chip){
 
 function useExample(key){
 
-    const example=dgExamplePrompts[key];
+    const type=dgExampleTypes[key];
 
-    if(!example){
+    if(!type){
         return;
     }
 
-    const textarea=document.getElementById("prompt");
-
-    textarea.value=example.text;
-    textarea.focus();
-
-    selectTypeByName(example.type);
+    selectTypeByName(type);
 }
 
 
-function toggleAttachMenu(e){
+/* ---- file upload (the + button) ---- */
 
-    e.stopPropagation();
+function handleDgFileSelect(event){
 
-    closeDgMenus("attach");
+    const newFiles=Array.from(event.target.files || []);
 
-    document.getElementById("attachMenu")
-        .classList.toggle("show");
+    newFiles.forEach(function(file){
+        dgAttachedFiles.push(file);
+    });
+
+    renderDgFileChips();
+
+    // allow selecting the same file again later
+    event.target.value="";
 }
 
+
+function removeDgFile(index){
+
+    dgAttachedFiles.splice(index,1);
+
+    renderDgFileChips();
+}
+
+
+function renderDgFileChips(){
+
+    const container=document.getElementById("fileChips");
+
+    container.innerHTML="";
+
+    dgAttachedFiles.forEach(function(file,index){
+
+        const chip=document.createElement("div");
+        chip.className="file-chip";
+
+        const label=document.createElement("span");
+        label.textContent=file.name;
+
+        const removeBtn=document.createElement("button");
+        removeBtn.type="button";
+        removeBtn.setAttribute("aria-label","Remove "+file.name);
+        removeBtn.textContent="\u2715";
+
+        removeBtn.onclick=function(){
+            removeDgFile(index);
+        };
+
+        chip.appendChild(label);
+        chip.appendChild(removeBtn);
+
+        container.appendChild(chip);
+    });
+}
+
+
+/* ---- model dropdown (unchanged) ---- */
 
 function toggleModelMenu(e){
 
     e.stopPropagation();
-
-    closeDgMenus("model");
 
     document.getElementById("modelMenu")
         .classList.toggle("show");
@@ -2842,16 +3418,10 @@ function selectModel(btn,name){
 }
 
 
-function closeDgMenus(except){
+function closeDgMenus(){
 
-    if(except!=="attach"){
-        document.getElementById("attachMenu").classList.remove("show");
-    }
-
-    if(except!=="model"){
-        document.getElementById("modelMenu").classList.remove("show");
-        document.getElementById("modelSelect").classList.remove("open");
-    }
+    document.getElementById("modelMenu").classList.remove("show");
+    document.getElementById("modelSelect").classList.remove("open");
 }
 
 
@@ -2860,23 +3430,17 @@ document.addEventListener("click",function(){
 });
 
 
+/* ---- send / generate (the arrow button) ---- */
+
+function escapeHtml(str){
+
+    return String(str).replace(/[&<>"']/g,function(c){
+        return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+}
+
+
 function handleGenerate(){
-
-    const textarea=document.getElementById("prompt");
-    const value=textarea.value.trim();
-
-    if(!value){
-
-        textarea.classList.remove("shake");
-
-        void textarea.offsetWidth;
-
-        textarea.classList.add("shake");
-
-        textarea.focus();
-
-        return;
-    }
 
     const sendBtn=document.getElementById("sendBtn");
     const sendIcon=document.getElementById("sendIcon");
@@ -2895,8 +3459,17 @@ function handleGenerate(){
     previewTitle.textContent="Your design is being generated...";
     previewText.textContent="This usually takes a few seconds. We'll show your screens here as soon as they're ready.";
 
-    previewMeta.innerHTML="<span>"+dgSelectedType+"</span>"+
-        (dgSelectedStyle ? "<span>"+dgSelectedStyle+"</span>" : "");
+    let metaHtml="<span>"+dgSelectedType+"</span>";
+
+    if(dgSelectedStyle){
+        metaHtml+="<span>"+dgSelectedStyle+"</span>";
+    }
+
+    dgAttachedFiles.forEach(function(file){
+        metaHtml+="<span>"+escapeHtml(file.name)+"</span>";
+    });
+
+    previewMeta.innerHTML=metaHtml;
 
     previewSection.scrollIntoView({
         behavior:"smooth",
@@ -2953,7 +3526,7 @@ window.addEventListener(
         loadSavedCode();
 
 
-        if(memoryStore.theme==="light"){
+        if(storeGet("theme")==="light"){
 
             document.body.classList.add("light");
 
@@ -2964,6 +3537,8 @@ window.addEventListener(
 
 
         updateEditorTheme();
+
+        initSettings();
 
 
         setTimeout(function(){
