@@ -748,6 +748,47 @@ body.light #designPage{
     background:rgba(61,107,255,.3);
 }
 
+#designPage .prompt-wrap{
+    padding:16px 4px 0;
+}
+
+#designPage .dg-prompt-input{
+    width:100%;
+    min-height:26px;
+    max-height:180px;
+    padding:0;
+    border:none;
+    outline:none;
+    resize:none;
+    overflow-y:auto;
+    background:transparent;
+    color:var(--dg-ink);
+    font-family:inherit;
+    font-size:15.5px;
+    line-height:1.5;
+}
+
+#designPage .dg-prompt-input::placeholder{
+    color:var(--dg-placeholder);
+}
+
+#designPage .type-grid.dg-shake,
+#designPage .composer-box.dg-shake{
+    animation:dgShake .4s ease;
+}
+
+@keyframes dgShake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);}
+    40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(4px);}
+}
+
+#designPage .type-grid.dg-needs-selection .type-card{
+    border-color:#f43f5e;
+}
+
 #designPage .toolbar{
     display:flex;
     align-items:center;
@@ -1024,6 +1065,14 @@ body.light #designPage{
 
     #designPage .toolbar-left{
         gap:6px;
+    }
+
+    #designPage .prompt-wrap{
+        padding:12px 2px 0;
+    }
+
+    #designPage .dg-prompt-input{
+        font-size:15px;
     }
 }
 
@@ -1472,7 +1521,7 @@ body.light .set-btn{
             </div>
 
             <div class="nav-item" onclick="handleNavClick('design')">
-                Design
+                AI
             </div>
 
             <div class="nav-item" onclick="handleNavClick('contact')">
@@ -1502,7 +1551,7 @@ body.light .set-btn{
             <div class="set-title">Settings</div>
 
             <div class="set-row">
-                <div class="set-label">Screen size (poora app zoom in / out)</div>
+                <div class="set-label">Screen size (zoom the whole app in / out)</div>
                 <div class="set-ctrl">
                     <button class="set-btn" onclick="changeUiZoom(-10)">&minus;</button>
                     <div class="set-value" id="uiZoomValue">100%</div>
@@ -1520,7 +1569,7 @@ body.light .set-btn{
             </div>
 
             <div class="set-row">
-                <div class="set-label">Extra buttons toolbar (&lt; &gt; { } TAB, arrows)</div>
+                <div class="set-label">Symbols toolbar (&lt; &gt; { } TAB, arrows)</div>
                 <div class="set-ctrl">
                     <button class="set-btn text" id="toolbarToggleBtn" onclick="toggleToolbarSetting()">On</button>
                 </div>
@@ -1529,9 +1578,9 @@ body.light .set-btn{
             <button class="set-btn set-reset" onclick="resetSettings()">Reset to default</button>
 
             <div class="set-hint">
-                Editor par Ctrl + scroll (ya Ctrl + / Ctrl -) aur phone par
-                do ungli se pinch karne se sirf code zoom hota hai, poora
-                browser nahi.
+                Ctrl + scroll on the editor (or Ctrl + / Ctrl -), and pinching
+                with two fingers on a phone, only zooms the code — not the
+                whole browser.
             </div>
 
         </div>
@@ -1696,7 +1745,7 @@ body.light .set-btn{
                         <span>Website</span>
                     </div>
 
-                    <div class="type-card selected" data-type="Mobile app" onclick="selectType(this)">
+                    <div class="type-card" data-type="Mobile app" onclick="selectType(this)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.75" width="11" height="18.5" rx="2.4"/><line x1="10.4" y1="18.4" x2="13.6" y2="18.4"/></svg>
                         <span>Mobile app</span>
                     </div>
@@ -1733,6 +1782,15 @@ body.light .set-btn{
                 </div>
 
                 <div class="file-chips" id="fileChips"></div>
+
+                <div class="prompt-wrap">
+                    <textarea id="dgPromptInput"
+                              class="dg-prompt-input"
+                              placeholder="Describe what you'd like to design, or search for an idea..."
+                              rows="1"
+                              oninput="autoGrowPrompt(this)"
+                              onkeydown="handlePromptKeydown(event)"></textarea>
+                </div>
 
                 <div class="toolbar">
 
@@ -2658,7 +2716,7 @@ function toggleToolbarSetting(){
 
     toolbarEnabled=!toolbarEnabled;
 
-    storeSet("toolbarEnabled2",toolbarEnabled ? "1" : "0");
+    storeSet("toolbarEnabled",toolbarEnabled ? "1" : "0");
 
     applyToolbarSetting();
 }
@@ -2668,11 +2726,11 @@ function resetSettings(){
 
     uiZoom=100;
     editorFont=window.innerWidth<=500 ? 14 : 15;
-    toolbarEnabled=true;
+    toolbarEnabled=isTouchDevice;
 
     storeSet("uiZoom","100");
     storeSet("editorFont",String(editorFont));
-    storeSet("toolbarEnabled2",toolbarEnabled ? "1" : "0");
+    storeSet("toolbarEnabled",toolbarEnabled ? "1" : "0");
 
     applyUiZoom();
     applyEditorFont();
@@ -2696,7 +2754,7 @@ function initSettings(){
 
     const z=parseInt(storeGet("uiZoom"),10);
     const f=parseInt(storeGet("editorFont"),10);
-    const t=storeGet("toolbarEnabled2");
+    const t=storeGet("toolbarEnabled");
 
     uiZoom=isNaN(z) ? 100 : clamp(z,50,200);
 
@@ -2704,9 +2762,8 @@ function initSettings(){
         ? (window.innerWidth<=500 ? 14 : 15)
         : clamp(f,8,48);
 
-    /* buttons toolbar is ON by default everywhere */
     toolbarEnabled=(t===null || t===undefined)
-        ? true
+        ? isTouchDevice
         : t==="1";
 
     applyUiZoom();
@@ -2920,27 +2977,26 @@ function handleNavClick(item){
         alert(
 `About - Shobhit's Web Code Studio
 
-Yeh ek mobile-friendly online code editor hai jisme aap
-seedhe browser mein HTML, CSS aur JavaScript likh kar
-turant result dekh sakte hain - koi installation nahi
-chahiye.
+This is a mobile-friendly online code editor where you can
+write HTML, CSS and JavaScript right in the browser and see
+the result instantly - no installation needed.
 
-Kaise kaam karta hai:
-• HTML, CSS, JS ke liye alag-alag tabs, taaki code
-  organize rahe.
-• CodeMirror editor engine, jisme syntax highlighting,
-  auto bracket/tag closing aur line numbers milte hain.
-• RUN button teenon code files ko jodkar ek live
-  preview banata hai aur Output tab mein dikhata hai
-  (isliye HTML ke sirf <body> ka content use hota hai).
-• Mobile keyboard toolbar mein zaroori symbols
-  ( < > { } " ' = / TAB, arrow keys ) ek tap mein
-  milte hain, jo phone par type karna aasan banate hain.
-• Day/Night theme switch aur is session ke liye
-  code memory mein save rehta hai.
+How it works:
+• Separate tabs for HTML, CSS and JS, so your code stays
+  organized.
+• CodeMirror editor engine, which gives you syntax
+  highlighting, auto bracket/tag closing and line numbers.
+• The RUN button combines all three code files into one
+  live preview and shows it in the Output tab (which is
+  why only the <body> content of the HTML is used).
+• The mobile keyboard toolbar puts the symbols you need
+  ( < > { } " ' = / TAB, arrow keys ) one tap away, making
+  it easy to type on a phone.
+• A Day/Night theme switch, and your code is kept in
+  memory for this session.
 
-Short mein: yeh chhota, browser-based HTML/CSS/JS
-playground hai, seekhne aur jaldi test karne ke liye.`
+In short: this is a small, browser-based HTML/CSS/JS
+playground for learning and quick testing.`
         );
 
     }
@@ -3261,7 +3317,7 @@ async function handleContactSubmit(e){
 }
 
 
-let dgSelectedType="Mobile app";
+let dgSelectedType=null;
 let dgSelectedStyle=null;
 let dgAttachedFiles=[];
 
@@ -3430,6 +3486,25 @@ document.addEventListener("click",function(){
 });
 
 
+/* ---- prompt textarea (typing / search box) ---- */
+
+function autoGrowPrompt(el){
+
+    el.style.height="auto";
+    el.style.height=Math.min(el.scrollHeight,180)+"px";
+}
+
+
+function handlePromptKeydown(event){
+
+    if(event.key==="Enter" && !event.shiftKey){
+
+        event.preventDefault();
+        handleGenerate();
+    }
+}
+
+
 /* ---- send / generate (the arrow button) ---- */
 
 function escapeHtml(str){
@@ -3440,7 +3515,39 @@ function escapeHtml(str){
 }
 
 
+function flashTypeGridWarning(){
+
+    const typeGrid=document.getElementById("typeGrid");
+
+    typeGrid.classList.add("dg-shake","dg-needs-selection");
+
+    typeGrid.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+
+    setTimeout(function(){
+        typeGrid.classList.remove("dg-shake");
+    },400);
+
+    setTimeout(function(){
+        typeGrid.classList.remove("dg-needs-selection");
+    },1600);
+}
+
+
+let dgGenerateTimers=[];
+
+
 function handleGenerate(){
+
+    if(!dgSelectedType){
+        flashTypeGridWarning();
+        return;
+    }
+
+    dgGenerateTimers.forEach(clearTimeout);
+    dgGenerateTimers=[];
 
     const sendBtn=document.getElementById("sendBtn");
     const sendIcon=document.getElementById("sendIcon");
@@ -3449,20 +3556,21 @@ function handleGenerate(){
     const previewTitle=document.getElementById("previewTitle");
     const previewText=document.getElementById("previewText");
     const previewMeta=document.getElementById("previewMeta");
+    const promptInput=document.getElementById("dgPromptInput");
 
+    const promptText=promptInput.value.trim();
+
+    sendBtn.disabled=true;
     sendBtn.classList.add("loading");
     sendIcon.style.opacity="0.4";
 
     previewSection.classList.add("show");
     previewSpinner.style.display="block";
 
-    previewTitle.textContent="Your design is being generated...";
-    previewText.textContent="This usually takes a few seconds. We'll show your screens here as soon as they're ready.";
-
-    let metaHtml="<span>"+dgSelectedType+"</span>";
+    let metaHtml="<span>"+escapeHtml(dgSelectedType)+"</span>";
 
     if(dgSelectedStyle){
-        metaHtml+="<span>"+dgSelectedStyle+"</span>";
+        metaHtml+="<span>"+escapeHtml(dgSelectedStyle)+"</span>";
     }
 
     dgAttachedFiles.forEach(function(file){
@@ -3476,17 +3584,55 @@ function handleGenerate(){
         block:"center"
     });
 
-    setTimeout(function(){
+    /* a small "thinking -> searching -> generating" sequence
+       so the wait feels alive instead of a single static message */
 
+    const steps=[
+        {
+            title:"Thinking...",
+            text:promptText
+                ? "Understanding what you're looking for."
+                : "Understanding your "+dgSelectedType.toLowerCase()+" idea."
+        },
+        {
+            title:"Searching for inspiration...",
+            text:"Looking through layouts and styles that fit best."
+        },
+        {
+            title:"Generating your design...",
+            text:"Putting the screens together."
+        }
+    ];
+
+    let delay=0;
+
+    steps.forEach(function(step){
+
+        dgGenerateTimers.push(setTimeout(function(){
+            previewTitle.textContent=step.title;
+            previewText.textContent=step.text;
+        },delay));
+
+        delay+=700;
+    });
+
+    dgGenerateTimers.push(setTimeout(function(){
+
+        sendBtn.disabled=false;
         sendBtn.classList.remove("loading");
         sendIcon.style.opacity="1";
 
         previewSpinner.style.display="none";
 
         previewTitle.textContent="Preview ready";
-        previewText.textContent="This is a demo experience, so no screens were actually generated \u2014 wire this area up to your design engine to render real output here.";
+        previewText.textContent=promptText
+            ? "Here's a first look based on \u201c"+promptText+"\u201d. Refine it further with the style chips above."
+            : "Here's a first look at your "+dgSelectedType.toLowerCase()+". Refine it further with the style chips above.";
 
-    },1800);
+        promptInput.value="";
+        autoGrowPrompt(promptInput);
+
+    },delay+900));
 }
 
 
@@ -3504,7 +3650,7 @@ CSS -> CSS code
 JS -> JavaScript code
 Output -> Website result
 
-RUN -> Code run karega
+RUN -> Runs the code
 
 Day / Dark button -> Theme change
 
