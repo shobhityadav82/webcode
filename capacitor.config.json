@@ -1,0 +1,8 @@
+{
+  "appId": "com.shobhityadav82.webcode",
+  "appName": "WebCode Studio",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

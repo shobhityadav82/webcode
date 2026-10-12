@@ -1,0 +1,16 @@
+{
+  "name": "webcode-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shobhit's Web Code Studio Android wrapper built with Capacitor",
+  "scripts": {
+    "build:web": "mkdir -p www && cp index.html www/index.html"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
+  }
+}
